@@ -26,6 +26,7 @@
 #include "libavutil/mathematics.h"
 #include "libavutil/random_seed.h"
 #include "libavutil/opt.h"
+#include <time.h>
 
 #include "rtpenc.h"
 
@@ -535,7 +536,9 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
         s->last_octet_count = s->octet_count;
         s->first_packet = 0;
     }
-    s->cur_timestamp = s->base_timestamp;
+    struct timespec ts;
+    clock_gettime(1, &ts);
+    s->cur_timestamp = (uint32_t) (ts.tv_sec * 100000 + ts.tv_nsec / 10000);
 
     switch(st->codecpar->codec_id) {
     case AV_CODEC_ID_PCM_MULAW:
