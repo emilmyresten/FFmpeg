@@ -538,7 +538,7 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
     }
     struct timespec ts;
     clock_gettime(1, &ts);
-    s->cur_timestamp = (uint32_t) ((ts.tv_sec * 100000 + ts.tv_nsec / 10000) % 4294967296);
+    s->cur_timestamp = (uint32_t) ((ts.tv_sec * 1000000000 + ts.tv_nsec / 1) % 4294967296);
 
     switch(st->codecpar->codec_id) {
     case AV_CODEC_ID_PCM_MULAW:
