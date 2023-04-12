@@ -537,7 +537,7 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
         s->first_packet = 0;
     }
     struct timespec ts;
-    clock_gettime(1, &ts);
+    clock_gettime(CLOCK_MONOTONIC, &ts);
 
     /*
     Number of nanoseconds per 90kHz tick is 10^9 / 90000 
