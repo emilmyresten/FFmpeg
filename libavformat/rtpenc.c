@@ -538,7 +538,23 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
     }
     struct timespec ts;
     clock_gettime(1, &ts);
-    s->cur_timestamp = (uint32_t) ((ts.tv_sec * 1000000000 + ts.tv_nsec / 1) % 4294967296);
+
+    /*
+    Number of nanoseconds per 90kHz tick is 10^9 / 90000 
+    */
+    double ns_per_90khz_tick = 11111.1111111; 
+
+    uint64_t ns_since_ref = ts.tv_sec * 1000000000 + ts.tv_nsec;
+    
+    /*
+    convert the nanoseconds to 90kHz ticks
+    */
+    uint64_t ticks_since_ref = ns_since_ref / ns_per_90khz_tick;
+
+    /*
+    convert to unsigned 32-bit with wraparound.
+    */
+    s->cur_timestamp = (uint32_t) ticks_since_ref % 4294967296;
 
     switch(st->codecpar->codec_id) {
     case AV_CODEC_ID_PCM_MULAW:
