@@ -544,7 +544,7 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
     */
     double ns_per_90khz_tick = 11111.1111111; 
 
-    uint64_t ns_since_ref = ts.tv_sec * 1000000000 + ts.tv_nsec;
+    uint64_t ns_since_ref = (uint64_t) ts.tv_sec * 1000000000 + ts.tv_nsec;
     
     /*
     convert the nanoseconds to 90kHz ticks. Loss of precision is introduced when casting to uint32.
