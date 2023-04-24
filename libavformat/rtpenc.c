@@ -547,14 +547,14 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
     uint64_t ns_since_ref = (uint64_t) ts.tv_sec * 1000000000 + ts.tv_nsec;
     
     /*
-    convert the nanoseconds to 90kHz ticks. Loss of precision is introduced when casting to uint32.
+    convert the nanoseconds to 90kHz ticks. Loss of precision is introduced when casting double -> uint64_t -> uint32.
     */
-    double ticks_since_ref = ns_since_ref / ns_per_90khz_tick;
+    uint64_t ticks_since_ref = (uint64_t) (ns_since_ref / ns_per_90khz_tick);
 
     /*
     convert to unsigned 32-bit with wraparound.
     */
-    s->cur_timestamp = (uint32_t) ticks_since_ref % 4294967296;
+    s->cur_timestamp = (uint32_t) (ticks_since_ref % 4294967296);
 
     switch(st->codecpar->codec_id) {
     case AV_CODEC_ID_PCM_MULAW:
